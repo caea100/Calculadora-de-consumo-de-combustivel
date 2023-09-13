@@ -26,23 +26,39 @@ class _TextFormState extends State<TextForm> {
   String _textoResultadoDetalhado = "";
   String _textoResultado = "";
 
+  double _parseDouble(String value) {
+    // Substituir vírgulas por pontos e converter para double.
+    return double.parse(value.replaceAll(',', '.'));
+  }
+
   void _calcular() {
     try {
-      double precoEtanol = double.parse(_controllerEtanol.text);
-      double precoGasolina = double.parse(_controllerGasolina.text);
-      double kmEtanolEstrada = double.parse(_controllerKmEstradaEtanol.text);
-      double kmGasolinaEstrada =
-          double.parse(_controllerKmEstradaGasolina.text);
-      double kmEtanolCidade = double.parse(_controllerKmCidadeEtanol.text);
-      double kmGasolinaCidade = double.parse(_controllerKmCidadeGasolina.text);
-      double distancia = double.parse(_controllerDistancia.text);
+      double? precoEtanol = _controllerEtanol.text.isEmpty
+          ? null
+          : _parseDouble(_controllerEtanol.text);
+      double precoGasolina = _parseDouble(_controllerGasolina.text);
+      double? kmEtanolEstrada = _controllerKmEstradaEtanol.text.isEmpty
+          ? null
+          : _parseDouble(_controllerKmEstradaEtanol.text);
+      double? kmGasolinaEstrada = _controllerKmEstradaGasolina.text.isEmpty
+          ? null
+          : _parseDouble(_controllerKmEstradaGasolina.text);
+      double? kmEtanolCidade = _controllerKmCidadeEtanol.text.isEmpty
+          ? null
+          : _parseDouble(_controllerKmCidadeEtanol.text);
+      double? kmGasolinaCidade = _controllerKmCidadeGasolina.text.isEmpty
+          ? null
+          : _parseDouble(_controllerKmCidadeGasolina.text);
+      double distancia = _parseDouble(_controllerDistancia.text);
 
-      double custoEtanolEstrada = (distancia / kmEtanolEstrada) * precoEtanol;
+      double custoEtanolEstrada =
+          (distancia / (kmEtanolEstrada ?? 0)) * (precoEtanol ?? 0);
       double custoGasolinaEstrada =
-          (distancia / kmGasolinaEstrada) * precoGasolina;
-      double custoEtanolCidade = (distancia / kmEtanolCidade) * precoEtanol;
+          (distancia / (kmGasolinaEstrada ?? 0)) * precoGasolina;
+      double custoEtanolCidade =
+          (distancia / (kmEtanolCidade ?? 0)) * (precoEtanol ?? 0);
       double custoGasolinaCidade =
-          (distancia / kmGasolinaCidade) * precoGasolina;
+          (distancia / (kmGasolinaCidade ?? 0)) * precoGasolina;
 
       setState(() {
         _textoResultado = calcularRecomendacao(
@@ -53,18 +69,18 @@ class _TextFormState extends State<TextForm> {
         );
 
         _textoResultadoDetalhado = """
-      Na cidade:
-      Álcool: 100 km * R\$ $precoEtanol/km = R\$ ${custoEtanolCidade.toStringAsFixed(2)}
-      Gasolina: 100 km * R\$ $precoGasolina/km = R\$ ${custoGasolinaCidade.toStringAsFixed(2)}
-      Na estrada:
-      Álcool: 100 km * R\$ $precoEtanol/km = R\$ ${custoEtanolEstrada.toStringAsFixed(2)}
-      Gasolina: 100 km * R\$ $precoGasolina/km = R\$ ${custoGasolinaEstrada.toStringAsFixed(2)}
-      Portanto, para percorrer 100 km:
-      Na cidade, com álcool, gastará R\$ ${custoEtanolCidade.toStringAsFixed(2)}.
-      Na cidade, com gasolina, gastará R\$ ${custoGasolinaCidade.toStringAsFixed(2)}.
-      Na estrada, com álcool, gastará R\$ ${custoEtanolEstrada.toStringAsFixed(2)}.
-      Na estrada, com gasolina, gastará R\$ ${custoGasolinaEstrada.toStringAsFixed(2)}.
-      """;
+        Na cidade:
+        Álcool: 100 km * R\$ $precoEtanol/km = R\$ ${custoEtanolCidade.toStringAsFixed(2)}
+        Gasolina: 100 km * R\$ $precoGasolina/km = R\$ ${custoGasolinaCidade.toStringAsFixed(2)}
+        Na estrada:
+        Álcool: 100 km * R\$ $precoEtanol/km = R\$ ${custoEtanolEstrada.toStringAsFixed(2)}
+        Gasolina: 100 km * R\$ $precoGasolina/km = R\$ ${custoGasolinaEstrada.toStringAsFixed(2)}
+        Portanto, para percorrer 100 km:
+        Na cidade, com álcool, gastará R\$ ${custoEtanolCidade.toStringAsFixed(2)}.
+        Na cidade, com gasolina, gastará R\$ ${custoGasolinaCidade.toStringAsFixed(2)}.
+        Na estrada, com álcool, gastará R\$ ${custoEtanolEstrada.toStringAsFixed(2)}.
+        Na estrada, com gasolina, gastará R\$ ${custoGasolinaEstrada.toStringAsFixed(2)}.
+        """;
       });
     } catch (e) {
       setState(() {
@@ -123,15 +139,22 @@ class _TextFormState extends State<TextForm> {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: TextField(
+              child: TextFormField(
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Preço do etanol, ex: 3,41',
+                decoration: InputDecoration(
+                  labelText: 'Iforme o preço do etanol :',
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                 ),
                 controller: _controllerEtanol,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return null;
+                  }
+                  return null;
+                },
               ),
             ),
             Padding(
@@ -159,28 +182,42 @@ class _TextFormState extends State<TextForm> {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: TextField(
+              child: TextFormField(
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'KM/L Estrada Etanol',
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                 ),
                 controller: _controllerKmEstradaEtanol,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return null;
+                  }
+                  return null;
+                },
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: TextField(
+              child: TextFormField(
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'KM/L Cidade Etanol',
                 ),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                 ),
                 controller: _controllerKmCidadeEtanol,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return null;
+                  }
+                  return null;
+                },
               ),
             ),
             Padding(
