@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 void main() {
   runApp(
@@ -118,189 +119,215 @@ class _TextFormState extends State<TextForm> {
     }
   }
 
+  final GlobalKey _one = GlobalKey();
+  final GlobalKey _two = GlobalKey();
+  final GlobalKey _three = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Abastecimento'),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Informe os preços:',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+    return ShowCaseWidget(
+      builder: Builder(builder: (context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Abastecimento'),
+            leading: IconButton(
+              icon: Icon(Icons.help),
+              onPressed: () {
+                ShowCaseWidget.of(context).startShowCase([_one, _two, _three]);
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Iforme o preço do etanol :',
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Informe os preços:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                style: TextStyle(
-                  fontSize: 18,
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Preço do etanol, ex: 4,75',
+                    ),
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                    controller: _controllerEtanol,
+                    autovalidateMode: AutovalidateMode.always,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return null;
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-                controller: _controllerEtanol,
-                autovalidateMode: AutovalidateMode.always,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return null;
-                  }
-                  return null;
-                },
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Preço da gasolina, ex: 4,50',
+                    ),
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                    controller: _controllerGasolina,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Informe a kilometragem:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Showcase(
+                    key: _one,
+                    description: 'Quantos KM faz com Etanol na estrada',
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'KM/L Estrada Etanol',
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                      controller: _controllerKmEstradaEtanol,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return null;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Showcase(
+                    key: _two,
+                    description: 'Quantos KM faz na cidade com gasolina',
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: 'KM/L Cidade Etanol',
+                      ),
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                      controller: _controllerKmCidadeEtanol,
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return null;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'KM/L Estrada Gasolina',
+                    ),
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                    controller: _controllerKmEstradaGasolina,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'KM/L Cidade Gasolina',
+                    ),
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                    controller: _controllerKmCidadeGasolina,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Showcase(
+                    key: _three,
+                    description: 'Qual a distancia que pretende percorrer',
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Informe qual a distancia que ira percorrer',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      controller: _controllerDistancia,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  ),
+                  onPressed: _calcular,
+                  child: Text(
+                    'Veja os resultados',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Resultado:',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    _textoResultado,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    _textoResultadoDetalhado,
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Preço da gasolina, ex: 4,50',
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-                controller: _controllerGasolina,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Informe a kilometragem:',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'KM/L Estrada Etanol',
-                ),
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-                controller: _controllerKmEstradaEtanol,
-                autovalidateMode: AutovalidateMode.always,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return null;
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'KM/L Cidade Etanol',
-                ),
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-                controller: _controllerKmCidadeEtanol,
-                autovalidateMode: AutovalidateMode.always,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return null;
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'KM/L Estrada Gasolina',
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-                controller: _controllerKmEstradaGasolina,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'KM/L Cidade Gasolina',
-                ),
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-                controller: _controllerKmCidadeGasolina,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Informe qual a distancia que ira percorrer',
-                ),
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-                controller: _controllerDistancia,
-              ),
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              onPressed: _calcular,
-              child: Text(
-                'Veja os resultados',
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'Resultado:',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                _textoResultado,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                _textoResultadoDetalhado,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
     );
   }
 }
